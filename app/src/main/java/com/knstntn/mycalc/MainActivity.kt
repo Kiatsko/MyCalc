@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
 
         val function = View.OnClickListener { view ->
-            var nexnumber = textView.text.toString().toDoubleOrNull() ?: return@OnClickListener
+            var nexnumber = editTxt.text.toString().toDoubleOrNull() ?: return@OnClickListener
             val nexoperation = when (view.id) {
                 R.id.buttonPlus -> Operation.PLUS
                 R.id.buttonMinus -> Operation.MINUS
@@ -64,12 +64,11 @@ class MainActivity : AppCompatActivity() {
         pow.setOnClickListener(function)
 
         sqrt.setOnClickListener{
-            var nexnumber = textView.text.toString().toDoubleOrNull() ?: return@setOnClickListener
+            var nexnumber = editTxt.text.toString().toDoubleOrNull() ?: return@setOnClickListener
             val nexoperation = Math.sqrt(nexnumber)
             editTxt.text = ""
             number = nexnumber
-            operation = nexoperation
-            txView.text = "√$nexnumber"
+            txView.text = "$nexoperation"
         }
 
         clean.setOnClickListener{
