@@ -13,7 +13,8 @@ enum class Operation (
     PLUS("+", Double::plus),
     MINUS("-", Double::minus),
     MULTIPLE("x", Double::times),
-    DIVIDE("/", Double::div)
+    DIVIDE("/", Double::div),
+    POW("e^x", Math::pow)
 }
 
 class MainActivity : AppCompatActivity() {
@@ -32,24 +33,43 @@ class MainActivity : AppCompatActivity() {
         val div = findViewById<TextView>(R.id.buttonDiv)
         val clean = findViewById<TextView>(R.id.buttonClean)
         val equals = findViewById<TextView>(R.id.buttonEquals)
+        val pow = findViewById<TextView>(R.id.buttonPow)
+        val sqrt = findViewById<TextView>(R.id.buttonSqrt)
 
 
-        txView.setOnLongClickListener {
-            return@setOnLongClickListener false
-        }
-        val function = View.OnClickListener{view ->
+        val function = View.OnClickListener { view ->
             var nexnumber = textView.text.toString().toDoubleOrNull() ?: return@OnClickListener
             val nexoperation = when (view.id) {
                 R.id.buttonPlus -> Operation.PLUS
                 R.id.buttonMinus -> Operation.MINUS
                 R.id.buttonMult -> Operation.MULTIPLE
                 R.id.buttonDiv -> Operation.DIVIDE
+                R.id.buttonPow -> Operation.POW
 
                 else -> null
+            } ?: return@OnClickListener
+            if (txView.text != "") {
+                nexnumber = operation?.calc?.invoke(number!!, nexnumber) ?: 0.0
             }
+            editTxt.text = ""
+            number = nexnumber
+            operation = nexoperation
+            txView.text = "$nexnumber ${nexoperation.label}"
+        }
 
+        plus.setOnClickListener(function)
+        minus.setOnClickListener(function)
+        mult.setOnClickListener(function)
+        div.setOnClickListener(function)
+        pow.setOnClickListener(function)
 
-
+        sqrt.setOnClickListener{
+            var nexnumber = textView.text.toString().toDoubleOrNull() ?: return@setOnClickListener
+            val nexoperation = Math.sqrt(nexnumber)
+            editTxt.text = ""
+            number = nexnumber
+            operation = nexoperation
+            txView.text = "√$nexnumber"
         }
 
         clean.setOnClickListener{
@@ -59,6 +79,14 @@ class MainActivity : AppCompatActivity() {
             operation = null
         }
 
+        equals.setOnClickListener {
+            val secnumber = editTxt.text.toString().toDoubleOrNull() ?: return@setOnClickListener
+
+            number = operation!!.calc(number!!, secnumber)
+            txView.text = "$number"
+            editTxt.text = ""
+
+        }
 
     }
 }
